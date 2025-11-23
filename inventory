@@ -1,2 +1,11 @@
-172.31.5.10
-172.31.12.60
+# web servers (bbs)
+[webservers]
+172.31.37.59
+
+# database servres (bba)
+[dbservers]
+172.31.39.155
+
+# variables for all
+[all:vars]
+ansible_user=ubuntu
