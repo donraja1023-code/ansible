@@ -143,3 +143,57 @@ Here is a small example of writing ansible playbook to install `nginx` server an
         dest: /var/www/html/
 ```
 
+
+## Ansible Roles
+
+It is great to write playbook in a single `yaml` file when task is not complex but when your task is complex a single playbook may reach thousands of lines of code which is not great for readability and even hard to maintain. So, we use roles which is nothing but a way to modularity. You will divide sections of a playbook into different directory and files inside the module. As shown in [ansible docs](https://docs.ansible.com/projects/ansible/latest/playbook_guide/playbooks_reuse_roles.html#role-directory-structure), directory structure of ansible role is similar to following:
+
+```
+nginx
+├── README.md
+├── defaults
+│   └── main.yml -> defaults here
+├── files -> files here
+├── handlers
+│   └── main.yml -> handlers here
+├── meta
+│   └── main.yml -> metadata here
+├── tasks
+│   └── main.yml -> tasks here
+├── templates
+├── tests
+│   ├── inventory
+│   └── test.yml
+└── vars
+    └── main.yml -> vars here
+```
+
+This structure can be created using:
+
+```shell
+ansible-galaxy role init nginx
+```
+
+
+This can be overwhleming but trust me it is okay. You don't need to know all but enough. You will place different section of [the above example to deploy nginx](#Nginx-Server-with-Ansible) into different files in the given directory structure.
+
+It is quite easy for the above playbook to turn into role which is because it has some tasks and some files where tasks will be placed in `nginx/tasks/main.yml` and files i.e. `src: website/` will be moved to `nginx/files` and instead of writing `src: website/` as in tasks, it will be written as `src: files/website/`. See, it was simple as that. But wait?
+
+Now, your main playbook will be reduced to:
+
+```yaml
+---
+- name: Webserver deployment
+  hosts: webservers
+  become: true
+  roles:
+    - nginx
+```
+
+That's it, you call `nginx` role where all the instructions related webserver deployment is written. Run your playbook as previously:
+
+```shell
+ansible-playbook nginx-pb.yaml
+```
+
+Enjoy!
