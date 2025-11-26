@@ -146,8 +146,9 @@ Here is a small example of writing ansible playbook to install `nginx` server an
 
 ## Ansible Roles
 
-It is great to write playbook in a single `yaml` file when task is not complex but when your task is complex a single playbook may reach thousands of lines of code which is not great for readability and even hard to maintain. So, we use roles which is nothing but a way to modularity. You will divide sections of a playbook into different directory and files inside the module. As shown in [ansible docs](https://docs.ansible.com/projects/ansible/latest/playbook_guide/playbooks_reuse_roles.html#role-directory-structure), directory structure of ansible role is similar to following:
+It is great to write playbook in a single `yaml` file when task is not complex but when your task is complex a single playbook may reach thousands of lines of code which is not great for readability and even hard to maintain. So, we use roles which is nothing but a way to modularity. You will divide sections of a playbook into different directory and files inside the module. As shown in [ansible docs](https://docs.ansible.com/projects/ansible/latest/playbook_guide/playbooks_reuse_roles.html#role-directory-structure), directory structure of ansible role is similar to [following](#custom-ansible-role).
 
+### Custom Ansible Role
 ```
 nginx
 ├── README.md
@@ -189,11 +190,56 @@ Now, your main playbook will be reduced to:
   roles:
     - nginx
 ```
+See [nginx playbook](nginx_deployment.yaml) for code reference.
+
 
 That's it, you call `nginx` role where all the instructions related webserver deployment is written. Run your playbook as previously:
 
 ```shell
 ansible-playbook nginx-pb.yaml
 ```
+
+### Ansible Roles from Ansible Galaxy
+
+There are a lot of standalone roles in [ansible galaxy](https://galaxy.ansible.com/ui/standalone/roles/). They are like pre-defined docker containers in docker hub or pre-defined modules for terraform. You can install roles created by others, you can publish your own role in the ansible galaxy.
+
+For example, if you are required to install docker container in various OS, you got two option i.e. either write your own role or you search for roles written by community in galaxy and it's free.
+
+
+While searching role for docker, we can find [role by geerlingguy](https://galaxy.ansible.com/ui/standalone/roles/geerlingguy/docker/) is quite reputable. So, we can install and start using it.
+
+#### Step 1: Install and Verify Ansible Role
+
+```shell
+ansible-galaxy role install geerlingguy.docker
+```
+You can verify if the role is installed using any of the given command:
+```shell
+ls ~/.ansible/roles
+```
+You should at least see `geerlingguy.docker` folder.
+
+```shell
+ansible-galaxy role list
+```
+You should see at least following output:
+```console
+# /home/sonu-nigam/.ansible/roles
+- geerlingguy.docker, 7.8.0
+```
+
+#### Step 2: Use Ansible Role with playbook
+
+Just as in [custom ansible role](#custom-ansible-role), you can use this role with playbook. For example:
+
+```yaml
+---
+- name: Docker Deployment
+  hosts: all
+  become: true
+  roles:
+    - geerlingguy.docker
+```
+See [docker playbook](docker_pb.yaml) for code reference.
 
 Enjoy!

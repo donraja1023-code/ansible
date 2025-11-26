@@ -4,17 +4,3 @@
   become: true
   roles: 
     - nginx
-  # tasks:
-  #   - name: Install or Update nginx server
-  #     ansible.builtin.apt:
-  #       name: nginx
-  #       update_cache: yes
-  #   - name: Start nginx service, if not started and enable if not enabled
-  #     ansible.builtin.service:
-  #       name: nginx
-  #       state: started
-  #       enabled: yes
-  #   - name: Deploy code for nginx server
-  #     ansible.posix.synchronize:
-  #       src: website/
-  #       dest: /var/www/html/
